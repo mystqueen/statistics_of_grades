@@ -2,63 +2,122 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Statistics_of_grades {
+    static Scanner scanner = new Scanner(System.in);
+    private static int input;
+
+    /**
+     * Check range int.
+     *
+     * @param score the score
+     * @return the int
+     */
     public static int checkRange(int score){
-        int mod = score/10;
-        int n = score%10;
-        if (n > 0)
-            return mod +1;
-        return mod;
+        int scoreInTens = score/10;
+        int modulo = score%10;
+        if (modulo > 0)
+            return scoreInTens +1;
+        return scoreInTens;
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-//      Allow the user to enter the size of the array
-        System.out.println("Enter the number of students' scores you want to work with");
-        int arraySize = scanner.nextInt();
-//      Check and ensure that the array size is above 0 if not the user enters a new array size
-        while (arraySize <= 0){
-            System.out.println("Invalid arraySize. Please enter a size above 0  NOTE:You cannot have a negative arraySize");
-            arraySize = scanner.nextInt();
+    /**
+     * Method to draw the bar graph from left to right one line at a time
+     * Draw graph string.
+     *
+     * @param array the array
+     * @return the string
+     */
+    public static String drawGraph(int[] array){
+        int maxCount = 0;
+        for (int count : array){
+            if(count > maxCount){
+                maxCount = count;
+            }
+        }
+        System.out.println("Graph:\n");
+        for (int row = maxCount; row>0; row--){
+            System.out.printf("%2d >", row);
+            for (int i = 0; i < array.length; i++) {
+                int k = maxCount - array[i];
+                if (k > 0)
+                    System.out.print("             ");
+                else
+                    System.out.print("   #######   ");
+            }System.out.print("\n");
+            maxCount --;
         }
 
-//      Declare array based on given arraySize.
-//      Take input of the students' scores into the array
-        int [] scores = new int[arraySize];
+//     Printing the horizontal axis
+        System.out.println("   +-----------+-------------+-------------+-------------+-------------+");
+        System.out.println("   I    0-20   I     21-40   I     41-60   I     61-80   I     81-100  I");
 
-        System.out.println("Enter students' scores");
-        for (int i = 0; i < arraySize; i++) {
-            scores[i] = scanner.nextInt();
-        }
+        return "";
+    }
 
-//      Finding the minimum, maximum and average grades in the class using streams in arrays
-        int minGrade = Arrays.stream(scores).min().getAsInt();
-        int maxGrade = Arrays.stream(scores).max().getAsInt();
-        double avgGrade = Arrays.stream(scores).average().getAsDouble();
+    /**
+     * Calculations string.
+     * Calculate the minimum, maximum and average grades using streams in arrays
+     * @param array the array
+     * @return the string
+     */
+    public static String calculations(int[] array){
+        int minGrade = Arrays.stream(array).min().getAsInt();
+        int maxGrade = Arrays.stream(array).max().getAsInt();
+        double avgGrade = Arrays.stream(array).average().getAsDouble();
 
         System.out.println("\nThe maximum grade is " + maxGrade);
         System.out.println("The minimum grade is " + minGrade);
         System.out.println("The average grade is " + avgGrade + "\n");
 
+        return "";
+    }
+
+    /**
+     * Validation int.
+     *
+     * @return the int
+     */
+    public static int validation(){
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input (Should be an integer)!");
+            scanner.next();
+        }
+        return scanner.nextInt();
+    }
+
+    /**
+     * Take values int [ ].
+     *
+     * @param arraySize the array size
+     * @return the int [ ]
+     */
+    public static int [] takeArrayValues(int arraySize){
+        int[] scores = new int[arraySize];
+        try{
+            System.out.println("Enter students' scores");
+            for (int i = 0; i <= arraySize; i++) {
+                scores[i] = validation();
+            }
+        } catch (Exception e){
+            System.out.println("The number of values entered is more than the number of scores given! ");
+            takeArrayValues(arraySize);
+        }
+        return scores;
+    }
+
+    public static void main(String[] args) {
+//      Allow the user to enter the size of the array
+        int arraySize = 0;
+        System.out.println("Enter the number of students' scores you want to work with: ");
+        arraySize = validation();
+
+        int[] scores = takeArrayValues(arraySize);
+
+        System.out.println(calculations(scores));
+
 //      Declare stats array
         int [] stats = new int[5];
 
 //      Loop through scores array and group the scores in the 4 score ranges
-
-
-//
-//        for (int score : scores)
-//            if(score >= 0 && score <= 20){
-//                stats[0]++;
-//            } else if(score >= 21 && score <= 40){
-//                stats[1]++;
-//            } else if(score >= 41 && score <= 60){
-//                stats[2]++;
-//            } else if(score >= 61 && score <= 80){
-//                stats[3]++;
-//            } else {
-//                stats[4]++;
-//            }
-
 
         for( int grade : scores)
             switch (checkRange(grade)){
@@ -68,39 +127,7 @@ public class Statistics_of_grades {
             case 4,3 -> stats[1]++;
                 default -> stats[0]++;
             }
-
-
-//        Store the maximum value of the stats array in a variable for the vertical axis height of the graph
-        int maxCount = 0;
-        for (int count : stats){
-            if(count > maxCount){
-                maxCount = count;
-            }
-        }
-
-//        Displaying the graph
-        System.out.println("Graph:\n");
-
-//      Printing the vertical axis
-//      Print the vertical axis from top(highest value in the stats array) to down
-        for (int row = maxCount; row>0; row--){
-            System.out.printf("%2d >", row);
-//           Draw the graph from left to right one line at a time
-            for (int i = 0; i < stats.length; i++) {
-                int k = maxCount - stats[i];
-                if (k > 0)
-                    System.out.print("             ");
-                else
-                    System.out.print("   #######   ");
-//              Jump to the next line
-            }System.out.print("\n");
-//          Decrease the maximum count for printing the vertical axis by 1
-            maxCount --;
-        }
-
-//     Printing the horizontal axis
-        System.out.println("   +-----------+-------------+-------------+-------------+-------------+");
-        System.out.println("   I    0-20   I     21-40   I     41-60   I     61-80   I     81-100  I");
+        System.out.println(drawGraph(stats));
 
 
     }
