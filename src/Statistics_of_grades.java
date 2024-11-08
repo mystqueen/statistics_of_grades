@@ -2,6 +2,14 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Statistics_of_grades {
+    public static int checkRange(int score){
+        int mod = score/10;
+        int n = score%10;
+        if (n > 0)
+            return mod +1;
+        return mod;
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 //      Allow the user to enter the size of the array
@@ -35,26 +43,32 @@ public class Statistics_of_grades {
         int [] stats = new int[5];
 
 //      Loop through scores array and group the scores in the 4 score ranges
-//      store the number of scores for each range in the stats array
-//      stats index 0 = number of scores in the range 0 - 20
-//      stats index 1 = number of scores in the range 21 - 40
-//      stats index 2 = number of scores in the range 41 - 60
-//      stats index 3 = number of scores in the range 61 - 80
-//      stats index 4 = number of scores in the range 81 - 100
 
 
-        for (int score : scores)
-            if(score >= 0 && score <= 20){
-                stats[0]++;
-            } else if(score >= 21 && score <= 40){
-                stats[1]++;
-            } else if(score >= 41 && score <= 60){
-                stats[2]++;
-            } else if(score >= 61 && score <= 80){
-                stats[3]++;
-            } else {
-                stats[4]++;
+//
+//        for (int score : scores)
+//            if(score >= 0 && score <= 20){
+//                stats[0]++;
+//            } else if(score >= 21 && score <= 40){
+//                stats[1]++;
+//            } else if(score >= 41 && score <= 60){
+//                stats[2]++;
+//            } else if(score >= 61 && score <= 80){
+//                stats[3]++;
+//            } else {
+//                stats[4]++;
+//            }
+
+
+        for( int grade : scores)
+            switch (checkRange(grade)){
+            case 10,9 -> stats[4]++;
+            case 8,7 -> stats[3]++;
+            case 6,5 -> stats[2]++;
+            case 4,3 -> stats[1]++;
+                default -> stats[0]++;
             }
+
 
 //        Store the maximum value of the stats array in a variable for the vertical axis height of the graph
         int maxCount = 0;
@@ -71,11 +85,7 @@ public class Statistics_of_grades {
 //      Print the vertical axis from top(highest value in the stats array) to down
         for (int row = maxCount; row>0; row--){
             System.out.printf("%2d >", row);
-//            for the first line loop through the array to see which stats value reaches that number,
-//            If the maximum value in the array minus the current array value is less than 0,
-//            it means the number of students within that range of scores are not up to the maximum value of the array at that time,
-//            an empty space is printed so the "####" are in line,
-//            It is done this way because the console prints horizontally so we have to treat it a line at a time.
+//           Draw the graph from left to right one line at a time
             for (int i = 0; i < stats.length; i++) {
                 int k = maxCount - stats[i];
                 if (k > 0)
